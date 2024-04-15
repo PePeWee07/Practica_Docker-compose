@@ -1,4 +1,4 @@
-# Usa una imagen base de Java. Asegúrate de elegir una versión compatible con tu aplicación.
+# Usa una imagen base de Java. 
 FROM openjdk:17-jdk-alpine
 
 # Establece el directorio de trabajo dentro del contenedor.
