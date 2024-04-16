@@ -12,3 +12,8 @@ pipelines:
           name: 'Build and Test'
           script:
             - echo "Building Test..."
+      - step:
+          name: 'Deployment App'
+          deployment: test
+          script:
+            - echo "Deploying production App"
