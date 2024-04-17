@@ -52,7 +52,7 @@ public class UserController {
                         return ResponseEntity.ok().build();
                     }).orElse(ResponseEntity.notFound().build());
         } catch (DataAccessException e) {
-            response.put("mensaje", "El usuario con el ID proporcionado no existe en nuestro sistema.");
+            response.put("mensaje", "No se encontró ningún usuario con el ID proporcionado :(.");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
