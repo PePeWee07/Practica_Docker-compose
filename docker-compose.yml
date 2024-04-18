@@ -5,11 +5,11 @@ services:
     image: pee-angular_app:1.0.0
     build: ./angular/my-front-app/
     ports:
-      - 4200:4200
+      - "4200:4200"
     depends_on:
-      - java_app
+      - javaapp
 
-  java_app:
+  javaapp:
     build: .
     ports:
       - "8080:8080"
