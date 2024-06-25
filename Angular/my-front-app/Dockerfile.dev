@@ -1,0 +1,18 @@
+# Etapa de desarrollo
+FROM node:20-alpine AS development
+
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copia los archivos de definición del paquete y realiza la instalación
+COPY package*.json ./
+RUN npm install
+
+# Copia el resto del código fuente de la aplicación
+COPY . .
+
+# Instalar Angular CLI globalmente en el contenedor
+RUN npm install -g @angular/cli
+
+# Comando para ejecutar tu aplicación, asegurándose de que escucha en todas las interfaces
+CMD ["ng", "serve", "--host", "0.0.0.0"]

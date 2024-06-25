@@ -2,15 +2,15 @@ version: '3.9'
 services:
   angular_app:
     container_name: angular_app
-    image: pee-angular_app:1.0.0
-    build: ./angular/my-front-app/
+    image: pepewee/ucapp-frontend:1.0.0
     ports:
-      - "4200:4200"
+      - "4200:80"
     depends_on:
       - javaapp
 
   javaapp:
-    build: .
+    container_name: javaapp
+    image: pepewee/ucapp-backend:1.0.0
     ports:
       - "8080:8080"
     env_file:
@@ -20,6 +20,7 @@ services:
       - java_db
 
   java_db:
+    container_name: java_db
     image: postgres:13.3
     ports:
       - "5433:5432"

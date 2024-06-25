@@ -3,10 +3,14 @@
   <div class="content" role="main" *ngIf="users$ | async as users">
     <p *ngFor="let user of users">{{ user?.name |json }}</p>
   </div>
+  
 
   <div>
-    @for(pokemon of pokemones$; index as i){
-      <p>{{ pokemon.name }}</p>
+    @for (poke of pokeRegister; track poke.id) {
+      <div class="content">
+        <pre>Name: {{poke.name}}</pre>
+        <img src="{{poke.sprites.front_default}}" alt="pokemon" />
+      </div>
     }
   </div>
 

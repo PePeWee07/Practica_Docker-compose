@@ -17,19 +17,24 @@ export class AppComponent implements OnInit{
   title = 'my-front-app';
 
   public users$!: Observable<any>;
-  public pokemones$!: any;
+  public pokemones$!: Observable<any>;
 
   constructor(private usersService: UsersService){}
 
+  pokeRegister: Array<any> = [];
   listarPokemones(){
-    for(let i = 1; i <= 3; i++){
-      this.pokemones$ = this.usersService.getPokemones(i);
+    for(let i = 1; i <= 10; i++){
+      this.usersService.getPokemones(i).subscribe((data: any) => {
+        var {name, sprites} = data;
+        this.pokeRegister.push({name, sprites});
+      },(err) => {
+        console.log(err);
+      });
     }
-
   }
 
   ngOnInit(): void {
-      this.users$ = this.usersService.getUsers();
-
+    this.users$ = this.usersService.getUsers();
+    this.listarPokemones();
   }
 }
