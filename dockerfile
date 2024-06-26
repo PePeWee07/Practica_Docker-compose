@@ -1,11 +1,26 @@
-# Usa una imagen base de Java. 
+# Usa una imagen base de Maven para la construcción del proyecto.
+FROM maven:3.8.4-openjdk-17-slim AS build
+
+# Establece el directorio de trabajo dentro del contenedor.
+WORKDIR /app
+
+# Copia los archivos de Maven y descarga las dependencias.
+COPY pom.xml .
+COPY .mvn .mvn
+RUN mvn dependency:go-offline
+
+# Copia el código fuente del proyecto y compila la aplicación.
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Usa una imagen base de Java para ejecutar la aplicación.
 FROM openjdk:17-jdk-alpine
 
 # Establece el directorio de trabajo dentro del contenedor.
 WORKDIR /app
 
-# Copia el archivo .jar compilado en tu directorio de trabajo en el contenedor.
-COPY target/dockerisez.postgresql-0.0.1-SNAPSHOT.jar java-app.jar
+# Copia el archivo .jar compilado desde la etapa de construcción.
+COPY --from=build /app/target/dockerisez.postgresql-0.0.1-SNAPSHOT.jar java-app.jar
 
 # Exponer el puerto en el que la aplicación se ejecutará.
 EXPOSE 8080
@@ -19,15 +34,3 @@ USER spring:spring
 
 # El comando para ejecutar tu aplicación.
 CMD ["java", "-jar", "java-app.jar"]
-
-
-
-
-
-
-# Crear y usar un usuario no root
-# RUN addgroup -S spring && adduser -S spring -G spring: Este comando crea un grupo y un usuario llamado spring en el contenedor.
-
-# addgroup -S spring: Crea un grupo de sistema llamado spring.
-# adduser -S spring -G spring: Crea un usuario de sistema llamado spring y lo agrega al grupo spring.
-# USER spring:spring: Cambia al usuario spring para ejecutar los siguientes comandos y la aplicación.

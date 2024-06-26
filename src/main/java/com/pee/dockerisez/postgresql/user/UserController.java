@@ -16,12 +16,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
   @Autowired
   private UserRepository userRepository;
+
+  @GetMapping("/welcome")
+    public ResponseEntity<Map<String, String>> helloPost() {
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje: ", "Welcome to my API!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+  }
 
   @GetMapping
   public List<User> getAllUsers() {
