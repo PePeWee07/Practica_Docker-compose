@@ -1,13 +1,12 @@
-# Etapa de construcción
+# Stage 1: Builder
 FROM node:20-alpine AS build
 
-# Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copia los archivos de definición del paquete y realiza la instalación
 COPY package*.json ./
 
 # Utiliza npm ci si package-lock.json está disponible para una instalación más eficiente
+#RUN npm i --legacy-peer-deps
 RUN npm ci
 
 # Copia el resto del código fuente de la aplicación
@@ -16,14 +15,14 @@ COPY . .
 # Construye la aplicación para producción
 RUN npm run build --prod
 
-# Etapa de producción
+
+
+# Stage 2: Production
 FROM nginx:1.27.0-alpine
 
-# Copia los archivos construidos desde la etapa de construcción
-COPY --from=build /app/dist/my-front-app /usr/share/nginx/html
+# Copia los archivos construidos desde la etapa de construcción y los archivos de configuración de Nginx
+COPY --from=build /app/dist/my-front-app/browser /usr/share/nginx/html
 COPY --from=build /app/nginx.conf /etc/nginx/conf.d/default.conf
-
-#COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Exponer el puerto 80 para el servidor Nginx
 EXPOSE 80
