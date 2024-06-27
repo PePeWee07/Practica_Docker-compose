@@ -1,18 +1,20 @@
-# Etapa de desarrollo
-FROM node:20-alpine AS development
+# Usa una imagen base de Node.js para construir y ejecutar la aplicación Angular
+FROM node:20-alpine
 
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copia los archivos de definición del paquete y realiza la instalación
+# Copia package.json y package-lock.json para instalar las dependencias
 COPY package*.json ./
+
+# Instala las dependencias
 RUN npm install
 
-# Copia el resto del código fuente de la aplicación
+# Copia el resto del código de la aplicación
 COPY . .
 
-# Instalar Angular CLI globalmente en el contenedor
-RUN npm install -g @angular/cli
+# Exponer el puerto en el que la aplicación Angular se ejecutará
+EXPOSE 4200
 
-# Comando para ejecutar tu aplicación, asegurándose de que escucha en todas las interfaces
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+# Comando para ejecutar la aplicación con hot reload
+CMD ["npm", "start"]

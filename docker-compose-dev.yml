@@ -3,16 +3,19 @@ services:
   angular_app:
     container_name: angular_app
     build:
-      context: ./angular/my-front-app/
-      dockerfile: Dockerfile
+      context: ./angular/my-front-app
+      dockerfile: Dockerfile.dev
     ports:
-      - "4200:80"
+      - "4200:4200"
+    volumes:
+      - ./angular/my-front-app:/app
+      - /app/node_modules
     depends_on:
       - javaapp
 
   javaapp:
     container_name: javaapp
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     ports:

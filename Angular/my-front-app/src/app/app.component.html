@@ -1,10 +1,13 @@
 <div class="">
 
+  <h1>Usuarios</h1>
   <div class="content" role="main" *ngIf="users$ | async as users">
-    <p *ngFor="let user of users">{{ user?.name |json }}</p>
+    <p *ngFor="let user of users">
+      Name: {{ user?.name}}
+    </p>
   </div>
-  
 
+  <h1>Pokemones</h1>
   <div>
     @for (poke of pokeRegister; track poke.id) {
       <div class="content">
