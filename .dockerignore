@@ -1,0 +1,19 @@
+# Maven folders
+target
+.mvn
+.mvnw
+.mvnw.cmd
+
+# IDE files
+.idea
+*.iml
+*.ipr
+*.iws
+
+# Other
+.git
+.gitignore
+Dockerfile*
+docker-compose*
+README.md
+

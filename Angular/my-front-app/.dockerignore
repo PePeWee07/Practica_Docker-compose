@@ -1,6 +1,25 @@
+# Node modules y build output
 node_modules
 dist
+
+# Archivos de Git
 .git
 .gitignore
+
+# Dockerfiles y configuración
 Dockerfile*
+docker-compose*
+
+# Archivos de documentación
 README.md
+*.md
+
+# Configuración de editores y sistemas operativos
+*.log
+*.swp
+.DS_Store
+Thumbs.db
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
