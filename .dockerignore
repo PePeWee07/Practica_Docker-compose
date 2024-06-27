@@ -1,19 +1,19 @@
-# Maven folders
 target
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/
+.mvn/wrapper
+.mvn/
 .mvn
-.mvnw
-.mvnw.cmd
-
-# IDE files
+mvnw
+mvnw.cmd
 .idea
 *.iml
 *.ipr
 *.iws
-
-# Other
 .git
 .gitignore
 Dockerfile*
-docker-compose*
 README.md
-
+node_modules
+dist
