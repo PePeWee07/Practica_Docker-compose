@@ -27,7 +27,7 @@ public class UserController {
   @GetMapping("/welcome")
     public ResponseEntity<Map<String, String>> helloPost() {
         Map<String, String> response = new HashMap<>();
-        response.put("mensaje: ", "Welcome to my API!");
+        response.put("mensaje: ", "Welcome to my API! :), diviertete!");
         return new ResponseEntity<>(response, HttpStatus.OK);
   }
 

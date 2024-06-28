@@ -1,19 +1,24 @@
-target
-.mvn/wrapper/maven-wrapper.jar
-.mvn/wrapper/maven-wrapper.properties
-.mvn/wrapper/
-.mvn/wrapper
-.mvn/
-.mvn
-mvnw
-mvnw.cmd
-.idea
-*.iml
-*.ipr
-*.iws
+# Spring Boot
+
+
+# Archivos de Git
 .git
 .gitignore
+
+# Dockerfiles y configuración
 Dockerfile*
+docker-compose*
+
+# Archivos de documentación
 README.md
-node_modules
-dist
+*.md
+
+# Configuración de editores y sistemas operativos
+*.log
+*.swp
+.DS_Store
+Thumbs.db
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
