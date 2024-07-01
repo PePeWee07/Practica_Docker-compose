@@ -2,7 +2,7 @@ version: '3.9'
 services:
   angular_app:
     container_name: angular_app
-    image: pepewee/ucapp-frontend:1.0.0
+    image: pepewee/ucapp-frontend:1.0.2
     ports:
       - "4200:80"
     depends_on:
