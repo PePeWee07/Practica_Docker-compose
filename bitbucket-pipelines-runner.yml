@@ -1,4 +1,4 @@
-#Este pipeline utiliza el servicio de bitbucket
+# Este piepeline utiliza runner 
 image: atlassian/default-image:2
 
 pipelines:
@@ -6,6 +6,9 @@ pipelines:
     main:
       - step:
           name: Build Docker Images
+          runs-on:
+            - self.hosted
+            - linux
           services:
             - docker
           caches:
@@ -19,16 +22,19 @@ pipelines:
             - docker build -t pepewee/ucapp-backend:$VERSION -f Dockerfile .
             - docker tag pepewee/ucapp-backend:$VERSION pepewee/ucapp-backend:latest
           artifacts:
-            - angular/my-front-app/Dockerfile
+            - Angular/my-front-app/Dockerfile
             - Dockerfile
       - step:
           name: Push Docker Images to Docker Hub
+          runs-on:
+            - self.hosted
+            - linux
           services:
             - docker
           caches:
             - docker
           script:
-            - VERSION="1.0.4"
+            - VERSION="1.0.0"
             - echo "Logging in to Docker Hub"
             - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
             - echo "Pushing Angular App Docker Image"
@@ -39,6 +45,9 @@ pipelines:
             - docker push pepewee/ucapp-backend:latest
       - step:
           name: Deploy to Server
+          runs-on:
+            - self.hosted
+            - linux
           script:
             - pipe: atlassian/ssh-run:0.4.3
               variables:
