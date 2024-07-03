@@ -20,6 +20,7 @@ pipelines:
             - echo "Building Java App Docker Image"
             - docker build -t pepewee/ucapp-backend:$VERSION -f Dockerfile .
             - docker tag pepewee/ucapp-backend:$VERSION pepewee/ucapp-backend:latest
+            - docker images
           artifacts:
             - Angular/my-front-app/Dockerfile
             - Dockerfile
