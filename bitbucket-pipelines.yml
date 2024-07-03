@@ -12,7 +12,7 @@ pipelines:
           script:
             - VERSION="1.0.0"
             - echo "Building Angular App Docker Image"
-            - docker build -t pepewee/ucapp-frontend:$VERSION -f angular/my-front-app/Dockerfile angular/my-front-app
+            - docker build -t pepewee/ucapp-frontend:$VERSION -f Angular/my-front-app/Dockerfile Angular/my-front-app
             - docker tag pepewee/ucapp-frontend:$VERSION pepewee/ucapp-frontend:latest
             - echo "Building Java App Docker Image"
             - docker build -t pepewee/ucapp-backend:$VERSION -f Dockerfile .
