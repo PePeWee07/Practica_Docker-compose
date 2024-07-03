@@ -23,7 +23,7 @@ export class AppComponent implements OnInit{
 
   pokeRegister: Array<any> = [];
   listarPokemones(){
-    for(let i = 1; i <= 10; i++){
+    for(let i = 4; i <= 6; i++){
       this.usersService.getPokemones(i).subscribe((data: any) => {
         var {name, sprites} = data;
         this.pokeRegister.push({name, sprites});

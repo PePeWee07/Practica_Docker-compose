@@ -1,20 +1,33 @@
 <div class="">
 
-  <h1>Usuarios</h1>
-  <div class="content" role="main" *ngIf="users$ | async as users">
-    <p *ngFor="let user of users">
-      Name: {{ user?.name}}
-    </p>
+  <h1 class="text-center">Version: 1.0.0</h1>
+
+  <div class="container text-center">
+    <div class="row align-items-center justify-content-center">
+      <div class="col-4">
+        <h1>Usuarios</h1>
+        <div class="content" role="main" *ngIf="users$ | async as users">
+          <p *ngFor="let user of users">
+            Name: {{ user?.name}}
+          </p>
+        </div>
+      </div>
+      <div class="col-4">
+        <h1>Pokemones</h1>
+        <div>
+          @for (poke of pokeRegister; track poke.id) {
+            <div class="content">
+              <pre>Name: {{poke.name}}</pre>
+              <img src="{{poke.sprites.front_default}}" alt="pokemon" />
+            </div>
+          }
+        </div>
+      </div>
+    </div>
   </div>
 
-  <h1>Pokemones</h1>
-  <div>
-    @for (poke of pokeRegister; track poke.id) {
-      <div class="content">
-        <pre>Name: {{poke.name}}</pre>
-        <img src="{{poke.sprites.front_default}}" alt="pokemon" />
-      </div>
-    }
-  </div>
+
+
+
 
 </div>

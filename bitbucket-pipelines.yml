@@ -1,14 +1,59 @@
-image: atlassian/default-image:3
+image: atlassian/default-image:2
 
 pipelines:
-  default:
-    - parallel:
+  branches:
+    main:
       - step:
-          name: 'Build and Test'
+          name: Build Docker Images
+          services:
+            - docker
+          caches:
+            - docker
           script:
-            - echo "Building Test..."
+            - VERSION="1.0.0"
+            - echo "Building Angular App Docker Image"
+            - docker build -t pepewee/ucapp-frontend:$VERSION -f angular/my-front-app/Dockerfile angular/my-front-app
+            - docker tag pepewee/ucapp-frontend:$VERSION pepewee/ucapp-frontend:latest
+            - echo "Building Java App Docker Image"
+            - docker build -t pepewee/ucapp-backend:$VERSION -f Dockerfile .
+            - docker tag pepewee/ucapp-backend:$VERSION pepewee/ucapp-backend:latest
+          artifacts:
+            - angular/my-front-app/Dockerfile
+            - Dockerfile
       - step:
-          name: 'Deployment App'
-          deployment: test
+          name: Push Docker Images to Docker Hub
+          services:
+            - docker
+          caches:
+            - docker
           script:
-            - echo "Deploying production App"
+            - VERSION="1.0.4"
+            - echo "Logging in to Docker Hub"
+            - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+            - echo "Pushing Angular App Docker Image"
+            - docker push pepewee/ucapp-frontend:$VERSION
+            - docker push pepewee/ucapp-frontend:latest
+            - echo "Pushing Java App Docker Image"
+            - docker push pepewee/ucapp-backend:$VERSION
+            - docker push pepewee/ucapp-backend:latest
+      - step:
+          name: Deploy to Server
+          script:
+            - pipe: atlassian/ssh-run:0.4.3
+              variables:
+                SSH_USER: "$SSH_USER"
+                SERVER: "$SSH_HOST"
+                SSH_KEY: $SSH_KEY
+                COMMAND: |
+                  export DOCKER_HUB_USERNAME=$DOCKER_HUB_USERNAME
+                  export DOCKER_HUB_TOKEN=$DOCKER_HUB_TOKEN
+                  echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+                  docker pull pepewee/ucapp-frontend:latest
+                  docker pull pepewee/ucapp-backend:latest
+                  docker-compose -f /data/sites/backoffice.ucacue.edu.ec/docker-compose.yml down
+                  docker-compose -f /data/sites/backoffice.ucacue.edu.ec/docker-compose.yml up -d
+
+definitions:
+  services:
+    docker:
+      memory: 2048
