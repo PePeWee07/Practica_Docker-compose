@@ -13,7 +13,7 @@ pipelines:
           caches:
             - docker
           script:
-            - VERSION="1.0.0"
+            - VERSION="1.0.1"
             - echo "Building Angular App Docker Image"
             - docker build -t pepewee/ucapp-frontend:$VERSION -f Angular/my-front-app/Dockerfile Angular/my-front-app
             - docker tag pepewee/ucapp-frontend:$VERSION pepewee/ucapp-frontend:latest
@@ -33,7 +33,7 @@ pipelines:
           caches:
             - docker
           script:
-            - VERSION="1.0.0"
+            - VERSION="1.0.1"
             - echo "Logging in to Docker Hub"
             - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
             - echo "Pushing Angular App Docker Image"
