@@ -5,6 +5,9 @@ pipelines:
     main:
       - step:
           name: Build Docker Images
+          runs-on:
+            - self.hosted
+            - linux
           services:
             - docker
           caches:
@@ -18,10 +21,13 @@ pipelines:
             - docker build -t pepewee/ucapp-backend:$VERSION -f Dockerfile .
             - docker tag pepewee/ucapp-backend:$VERSION pepewee/ucapp-backend:latest
           artifacts:
-            - angular/my-front-app/Dockerfile
+            - Angular/my-front-app/Dockerfile
             - Dockerfile
       - step:
           name: Push Docker Images to Docker Hub
+          runs-on:
+            - self.hosted
+            - linux
           services:
             - docker
           caches:
@@ -38,6 +44,9 @@ pipelines:
             - docker push pepewee/ucapp-backend:latest
       - step:
           name: Deploy to Server
+          runs-on:
+            - self.hosted
+            - linux
           script:
             - pipe: atlassian/ssh-run:0.4.3
               variables:
