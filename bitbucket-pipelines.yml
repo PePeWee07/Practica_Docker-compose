@@ -4,45 +4,49 @@ pipelines:
   branches:
     main:
       - step:
-          name: Build Docker Images
-          runs-on:
-            - self.hosted
-            - linux
-          services:
-            - docker
-          caches:
-            - docker
-          script:
-            - VERSION="1.0.1"
-            - echo "Building Angular App Docker Image"
-            - docker build -t pepewee/ucapp-frontend:$VERSION -f Angular/my-front-app/Dockerfile Angular/my-front-app
-            - docker tag pepewee/ucapp-frontend:$VERSION pepewee/ucapp-frontend:latest
-            - echo "Building Java App Docker Image"
-            - docker build -t pepewee/ucapp-backend:$VERSION -f Dockerfile .
-            - docker tag pepewee/ucapp-backend:$VERSION pepewee/ucapp-backend:latest
-            - docker images
-          artifacts:
-            - Angular/my-front-app/Dockerfile
-            - Dockerfile
-      - step:
-          name: Push Docker Images to Docker Hub
-          runs-on:
-            - self.hosted
-            - linux
-          services:
-            - docker
-          caches:
-            - docker
-          script:
-            - VERSION="1.0.1"
-            - echo "Logging in to Docker Hub"
-            - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
-            - echo "Pushing Angular App Docker Image"
-            - docker push pepewee/ucapp-frontend:$VERSION
-            - docker push pepewee/ucapp-frontend:latest
-            - echo "Pushing Java App Docker Image"
-            - docker push pepewee/ucapp-backend:$VERSION
-            - docker push pepewee/ucapp-backend:latest
+        name: Build Docker Images
+        runs-on:
+          - self.hosted
+          - linux
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - VERSION="1.0.1"
+          - echo "Building Angular App Docker Image"
+          - docker build -t pepewee/ucapp-frontend:$VERSION -f Angular/my-front-app/Dockerfile Angular/my-front-app
+          - docker tag pepewee/ucapp-frontend:$VERSION pepewee/ucapp-frontend:latest
+          - echo "Building Java App Docker Image"
+          - docker build -t pepewee/ucapp-backend:$VERSION -f Dockerfile .
+          - docker tag pepewee/ucapp-backend:$VERSION pepewee/ucapp-backend:latest
+          - docker images
+        artifacts:
+          - Angular/my-front-app/Dockerfile
+          - Dockerfile
+    - step:
+        name: Push Docker Images to Docker Hub
+        runs-on:
+          - self.hosted
+          - linux
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - VERSION="1.0.1"
+          - echo "Logging in to Docker Hub"
+          - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+          - echo "Verifying the existence of the image before pushing"
+          - docker images | grep pepewee/ucapp-frontend:$VERSION # Verifica la imagen
+          - docker images | grep pepewee/ucapp-backend:$VERSION # Verifica la imagen
+          - echo "Pushing Angular App Docker Image"
+          - docker push pepewee/ucapp-frontend:$VERSION
+          - docker push pepewee/ucapp-frontend:latest
+          - echo "Pushing Java App Docker Image"
+          - docker push pepewee/ucapp-backend:$VERSION
+          - docker push pepewee/ucapp-backend:latest
+           - docker push pepewee/ucapp-backend:latest
       - step:
           name: Deploy to Server
           runs-on:
