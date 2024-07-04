@@ -1,6 +1,9 @@
 # Usa una imagen base de Node.js para construir y ejecutar la aplicación Angular
 FROM node:20-alpine
 
+# Instala curl
+RUN apk add --no-cache curl
+
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
