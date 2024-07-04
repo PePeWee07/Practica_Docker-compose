@@ -38,6 +38,7 @@ pipelines:
             - echo "Logging in to Docker Hub"
             - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
             - echo "Verifying the existence of the images before pushing"
+            - docker images
             - docker images | grep pepewee/ucapp-frontend:$VERSION || { echo "Image pepewee/ucapp-frontend:$VERSION not found"; exit 1; }
             - docker images | grep pepewee/ucapp-backend:$VERSION || { echo "Image pepewee/ucapp-backend:$VERSION not found"; exit 1; }
             - echo "Pushing Angular App Docker Image"
