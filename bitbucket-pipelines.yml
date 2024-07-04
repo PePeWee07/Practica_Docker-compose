@@ -37,15 +37,14 @@ pipelines:
             - VERSION="1.0.1"
             - echo "Logging in to Docker Hub"
             - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
-            - echo "Verifying the existence of the image before pushing"
-            - docker images | grep pepewee/ucapp-frontend:$VERSION # Verifica la imagen
-            - docker images | grep pepewee/ucapp-backend:$VERSION # Verifica la imagen
+            - echo "Verifying the existence of the images before pushing"
+            - docker images | grep pepewee/ucapp-frontend:$VERSION || { echo "Image pepewee/ucapp-frontend:$VERSION not found"; exit 1; }
+            - docker images | grep pepewee/ucapp-backend:$VERSION || { echo "Image pepewee/ucapp-backend:$VERSION not found"; exit 1; }
             - echo "Pushing Angular App Docker Image"
             - docker push pepewee/ucapp-frontend:$VERSION
             - docker push pepewee/ucapp-frontend:latest
             - echo "Pushing Java App Docker Image"
             - docker push pepewee/ucapp-backend:$VERSION
-            - docker push pepewee/ucapp-backend:latest
             - docker push pepewee/ucapp-backend:latest
       - step:
           name: Deploy to Server
