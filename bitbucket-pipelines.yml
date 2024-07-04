@@ -44,15 +44,21 @@ pipelines:
           caches:
             - docker
           script:
-            - echo "Logging in to Docker Hub"
-            - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
-            - echo "Pulling Docker Images"
-            - docker pull pepewee/ucapp-frontend:latest
-            - docker pull pepewee/ucapp-backend:latest
-            - echo "Stopping and Removing Docker Containers"
-            - docker-compose -f /data/sites/backoffice.ucacue.edu.ec/docker-compose.yml down
-            - echo "Starting Docker Containers"
-            - docker-compose -f /data/sites/backoffice.ucacue.edu.ec/docker-compose.yml up -d
+            - pipe: atlassian/ssh-run:0.4.0
+              variables:
+                SSH_USER: $SSH_USER #No usado
+                SERVER: $SERVER #No usado
+                COMMAND: |
+                  echo "VERSION =" $VERSION
+                  echo "Logging in to Docker Hub"
+                  echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+                  echo "Pulling Docker Images"
+                  docker pull pepewee/ucapp-frontend:latest
+                  docker pull pepewee/ucapp-backend:latest
+                  echo "Stopping and Removing Docker Containers"
+                  docker-compose -f /data/sites/backoffice.ucacue.edu.ec/docker-compose.yml down
+                  echo "Starting Docker Containers"
+                  docker-compose -f /data/sites/backoffice.ucacue.edu.ec/docker-compose.yml up -d
 
 definitions:
   services:
