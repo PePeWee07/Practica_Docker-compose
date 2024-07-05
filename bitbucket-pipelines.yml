@@ -61,10 +61,12 @@ pipelines:
           script:
             - pipe: atlassian/ssh-run:0.4.0
               variables:
-                SSH_USER: $SSH_USER
-                SERVER: $SERVER
+                SSH_USER: "$SSH_USER"
+                SERVER: "$SSH_HOST"
+                SSH_KEY: $SSH_KEY
                 COMMAND: |
-                  echo "VERSION =" $VERSION
+                  echo "VERSION_FRONT =" $VERSION_FRONT
+                  echo "VERSION_BACK =" $VERSION_BACK
                   echo "Logging in to Docker Hub"
                   echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
                   echo "Pulling Docker Images"
