@@ -1,14 +1,83 @@
-image: atlassian/default-image:3
+image: atlassian/default-image:2
 
 pipelines:
-  default:
-    - parallel:
+  branches:
+    main:
       - step:
-          name: 'Build and Test'
+          name: Build and Test
           script:
-            - echo "Building Test..."
+            - echo "Test OK"
       - step:
-          name: 'Deployment App'
-          deployment: test
+          name: Build and Push Docker Images (back-end)
+          runs-on:
+            - self.hosted
+            - linux
+          services:
+            - docker
+          caches:
+            - docker
           script:
-            - echo "Deploying production App"
+            - echo "VERSION_BACK =" $VERSION_BACK
+            - echo "Logging in to Docker Hub"
+            - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+            - echo "Building Java App Docker Image"
+            - docker build -t pepewee/ucapp-backend:$VERSION_BACK -f Dockerfile .
+            - docker tag pepewee/ucapp-backend:$VERSION_BACK pepewee/ucapp-backend:latest
+            - echo "Docker images"
+            - docker images
+            - echo "Pushing Java App Docker Image"
+            - docker push pepewee/ucapp-backend:$VERSION_BACK
+            - docker push pepewee/ucapp-backend:latest
+      - step:
+          name: Build and Push Docker Image (front-end)
+          runs-on:
+            - self.hosted
+            - linux
+          services:
+            - docker
+          caches:
+            - docker
+          script:
+            - echo "VERSION_FRONT =" $VERSION_FRONT
+            - echo "Logging in to Docker Hub"
+            - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+            - echo "Building Angular App Docker Image"
+            - docker build -t pepewee/ucapp-frontend:$VERSION_FRONT -f Angular/my-front-app/Dockerfile Angular/my-front-app
+            - docker tag pepewee/ucapp-frontend:$VERSION_FRONT pepewee/ucapp-frontend:latest
+            - echo "Docker images"
+            - docker images
+            - echo "Pushing Angular App Docker Image"
+            - docker push pepewee/ucapp-frontend:$VERSION_FRONT
+            - docker push pepewee/ucapp-frontend:latest
+      - step:
+          name: Deploy to Server
+          runs-on:
+            - self.hosted
+            - linux
+          services:
+            - docker
+          caches:
+            - docker
+          script:
+            - pipe: atlassian/ssh-run:0.4.0
+              variables:
+                SSH_USER: "$SSH_USER"
+                SERVER: "$SSH_HOST"
+                SSH_KEY: $SSH_KEY
+                COMMAND: |
+                  echo "VERSION_FRONT =" $VERSION_FRONT
+                  echo "VERSION_BACK =" $VERSION_BACK
+                  echo "Logging in to Docker Hub"
+                  echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+                  echo "Pulling Docker Images"
+                  docker pull pepewee/ucapp-frontend:latest
+                  docker pull pepewee/ucapp-backend:latest
+                  echo "Stopping and Removing Docker Containers"
+                  docker-compose -f /data/sites/backoffice.ucacue.edu.ec/docker-compose.yml down
+                  echo "Starting Docker Containers"
+                  docker-compose -f /data/sites/backoffice.ucacue.edu.ec/docker-compose.yml up -d
+
+definitions:
+  services:
+    docker:
+      memory: 2048

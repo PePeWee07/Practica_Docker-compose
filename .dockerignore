@@ -1,6 +1,5 @@
-# Node modules y build output
-node_modules
-dist
+# Spring Boot
+
 
 # Archivos de Git
 .git
