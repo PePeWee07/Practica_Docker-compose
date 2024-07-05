@@ -8,7 +8,7 @@ pipelines:
           script:
             - echo "Test OK"
       - step:
-          name: Build and Push Docker Images
+          name: Build and Push Docker Images (back-end)
           runs-on:
             - self.hosted
             - linux
@@ -17,23 +17,38 @@ pipelines:
           caches:
             - docker
           script:
-            - echo "VERSION =" $VERSION
+            - echo "VERSION_BACK =" $VERSION_BACK
+            - echo "Logging in to Docker Hub"
+            - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+            - echo "Building Java App Docker Image"
+            - docker build -t pepewee/ucapp-backend:$VERSION_BACK -f Dockerfile .
+            - docker tag pepewee/ucapp-backend:$VERSION_BACK pepewee/ucapp-backend:latest
+            - echo "Docker images"
+            - docker images
+            - echo "Pushing Java App Docker Image"
+            - docker push pepewee/ucapp-backend:$VERSION_BACK
+            - docker push pepewee/ucapp-backend:latest
+      - step:
+          name: Build and Push Docker Image (front-end)
+          runs-on:
+            - self.hosted
+            - linux
+          services:
+            - docker
+          caches:
+            - docker
+          script:
+            - echo "VERSION_FRONT =" $VERSION_FRONT
             - echo "Logging in to Docker Hub"
             - echo $DOCKER_HUB_TOKEN | docker login -u $DOCKER_HUB_USERNAME --password-stdin
             - echo "Building Angular App Docker Image"
-            - docker build -t pepewee/ucapp-frontend:$VERSION -f Angular/my-front-app/Dockerfile Angular/my-front-app
-            - docker tag pepewee/ucapp-frontend:$VERSION pepewee/ucapp-frontend:latest
-            - echo "Building Java App Docker Image"
-            - docker build -t pepewee/ucapp-backend:$VERSION -f Dockerfile .
-            - docker tag pepewee/ucapp-backend:$VERSION pepewee/ucapp-backend:latest
+            - docker build -t pepewee/ucapp-frontend:$VERSION_FRONT -f Angular/my-front-app/Dockerfile Angular/my-front-app
+            - docker tag pepewee/ucapp-frontend:$VERSION_FRONT pepewee/ucapp-frontend:latest
             - echo "Docker images"
             - docker images
             - echo "Pushing Angular App Docker Image"
-            - docker push pepewee/ucapp-frontend:$VERSION
+            - docker push pepewee/ucapp-frontend:$VERSION_FRONT
             - docker push pepewee/ucapp-frontend:latest
-            - echo "Pushing Java App Docker Image"
-            - docker push pepewee/ucapp-backend:$VERSION
-            - docker push pepewee/ucapp-backend:latest
       - step:
           name: Deploy to Server
           runs-on:
@@ -46,8 +61,8 @@ pipelines:
           script:
             - pipe: atlassian/ssh-run:0.4.0
               variables:
-                SSH_USER: $SSH_USER #No usado
-                SERVER: $SERVER #No usado
+                SSH_USER: $SSH_USER
+                SERVER: $SERVER
                 COMMAND: |
                   echo "VERSION =" $VERSION
                   echo "Logging in to Docker Hub"

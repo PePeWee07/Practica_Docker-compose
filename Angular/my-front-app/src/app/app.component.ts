@@ -6,7 +6,7 @@ import { EMPTY, Observable, catchError } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
 
-import { environment } from '../../environments/environment';
+import { environment } from '../environments/environment'
 
 @Component({
   selector: 'app-root',
