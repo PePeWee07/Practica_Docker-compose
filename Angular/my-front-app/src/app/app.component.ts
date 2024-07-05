@@ -6,6 +6,8 @@ import { EMPTY, Observable, catchError } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -18,6 +20,8 @@ export class AppComponent implements OnInit{
 
   public users$!: Observable<any>;
   public pokemones$!: Observable<any>;
+
+  Url: string = environment.baseUrl;
 
   constructor(private usersService: UsersService){}
 
